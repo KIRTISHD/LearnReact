@@ -1,26 +1,23 @@
-import React from 'react';
+import React, {useState} from 'react';
 import './App.css';
 import Header from './Header';
 import AddContact from './AddContact';
 import ContactList from './ContactList';
 
 function App() {
-  const contacts = [
-    {
-      id:"1",
-      name:"kd",
-      email:"kd@gmail.com"
-    },
-    {
-      id:"2",
-      name:"krd",
-      email:"krd@gmail.com"
-    }
-  ];
+  // [] in useState indicates initial value for contacts array
+  const [contacts, setContacts] = useState([]);
+
+
+  const addContactHandler = (contact) => {
+    //use a function to add object in array and not directly to array
+    setContacts([...contacts, contact]);
+  }
+
   return (
     <div className="ui container">
       <Header />
-      <AddContact />
+      <AddContact addContactHandler={addContactHandler}/>
       <ContactList contacts={contacts}/>
     </div>
   );
