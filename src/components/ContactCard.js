@@ -5,6 +5,7 @@ const ContactCard = (props) => {
 
     return (
         <div className="item">
+            <i className="user circle icon" alt="user"></i>
             <div className="content">
                 <div className="header">{name}</div>
                 <div>{email}</div>
