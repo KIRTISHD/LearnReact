@@ -12,8 +12,10 @@ import EditContact from './EditContact';
 function App() {
   // [] in useState indicates initial value for contacts array
   const [contacts, setContacts] = useState([]);
-  
-   const retrievedContacts = async() => {
+  const [ searchTerm, setSearchTerm ] = useState("");
+  const [searchResults, setSearchResults] = useState([]);
+
+  const retrievedContacts = async() => {
      const response = await api.get("/contacts");
      return response.data;
    };
@@ -44,6 +46,19 @@ function App() {
       return contact.id === id ? {...response.data} : contact;
     }));
   }
+
+  const searchHandler = (searchTerm) => {
+    setSearchTerm(searchTerm);
+    if (searchTerm !== "") {
+      const newContactList = contacts.filter((contact) => {
+        return Object.values(contact).join(" ").toLowerCase().includes(searchTerm.toLowerCase());
+      });
+      setSearchResults(newContactList);
+    }
+    else{
+      setSearchResults(contacts);
+    }
+  };
 
   useEffect(() => {
     // const retrievedContacts = JSON.parse(localStorage.getItem(LOCAL_STORAGE_KEY));
@@ -79,7 +94,7 @@ function App() {
           path="/"
           exact
           render={(props) => (
-            <ContactList {...props} contacts={contacts} getContactId={removeContactHandler}/>
+            <ContactList {...props} contacts={searchTerm.length < 1 ? contacts : searchResults} getContactId={removeContactHandler} term={searchTerm} searchKeyword={searchHandler}/>
           )} />
           <Route
             path="/add"
