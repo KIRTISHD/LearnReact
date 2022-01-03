@@ -7,6 +7,7 @@ import AddContact from './AddContact';
 import ContactList from './ContactList';
 import ContactDetail from './ContactDetail';
 import api from '../api/contacts';
+import EditContact from './EditContact';
 
 function App() {
   // [] in useState indicates initial value for contacts array
@@ -27,12 +28,21 @@ function App() {
     setContacts([...contacts, response.data]);
   }
 
-  const removeContactHandler = (id) => {
+  const removeContactHandler = async(id) => {
+    await api.delete(`/contacts/${id}`);
     const newContactList = contacts.filter((contact) => {
       return contact.id !== id;
     });
 
     setContacts(newContactList);
+  }
+
+  const updateContactHandler = async(contact) => {
+    const response = await api.put(`/contacts/${contact.id}`, contact);
+    const { id, name, email} = response.data;
+    setContacts(contacts.map(contact => {
+      return contact.id === id ? {...response.data} : contact;
+    }));
   }
 
   useEffect(() => {
@@ -74,6 +84,9 @@ function App() {
           <Route
             path="/add"
             render={(props) => (<AddContact {...props} addContactHandler={addContactHandler}/>)} />
+          <Route
+            path="/edit"
+            render={(props) => (<EditContact {...props} updateContactHandler={updateContactHandler}/>)} />
           <Route
             path="/contact/:id"
             component={ContactDetail} />
